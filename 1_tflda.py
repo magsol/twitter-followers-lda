@@ -2,7 +2,6 @@ import argparse
 import json
 import os.path
 
-# import gensim
 from joblib import Parallel, delayed
 import tweepy
 
@@ -43,6 +42,6 @@ if __name__ == "__main__":
 
     # Create the output dictionary to be json-serialized.
     final = {'{}'.format(fid): d for fid, d in out}
-    fp = open(os.path.join(outdir, "data.json"), "w")
+    fp = open(os.path.join(outdir, "raw_data.json"), "w")
     json.dump(final, fp)
     fp.close()
