@@ -10,7 +10,7 @@ from tflda.timelines import download_timelines
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Twitter Friends LDA',
         epilog = 'lol moar tw33tz', add_help = 'How to use',
-        prog = 'python tflda.py <args>')
+        prog = 'python 1_tflda.py <args>')
     parser.add_argument("--api-key", required = True,
         help = "OAuth API key.")
     parser.add_argument("--api-secret", required = True,
