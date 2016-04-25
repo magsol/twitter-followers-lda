@@ -12,7 +12,7 @@ def clean(tweets):
     # only going to process the "text" field of the tweet objects.
     tokens = []
     for tweet in tweets:
-        tokens.extend(_tokenize(tweet['text']))
+        tokens.extend(_tokenize(tweet['text'].lower()))
 
     # Rules:
     # - No URLs, stop words, @-replies.
@@ -20,6 +20,7 @@ def clean(tweets):
     tokens = filter(_minlength, tokens)
     tokens = filter(_urls, tokens)
     tokens = filter(_stopwords, tokens)
+    tokens = filter(_stoppatterns, tokens)
     tokens = filter(_replies, tokens)
 
     # K, that's it.
@@ -40,7 +41,14 @@ def _urls(s):
         re.match(r"(?:\@|https?\://)\S+", s) is None
 
 def _stopwords(s):
-    return s not in nltk.corpus.stopwords.words("english")
+    stoplist = set(nltk.corpus.stopwords.words("english") +
+        ["...", "i'm", "i've", "isn't", "that's", "you've", "you're", "don't",
+        "can't", "it's", "you'll", "there's", "didn't", "i'd", "what's"]
+    )
+    return s not in stoplist
+
+def _stoppatterns(s):
+    return re.match(r"^[0-9\.:,\/-]+$", s) is None
 
 def _replies(s):
     return s[0] != '@'
