@@ -11,7 +11,7 @@ def parse_tweets(user_id, tweets):
     Utility method for extracting the tweet content for a user.
     """
     document = clean(tweets)
-
+    return [user_id, [w for w in document]]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Twitter Friends LDA',
@@ -39,3 +39,7 @@ if __name__ == "__main__":
         delayed(parse_tweets)(
             user_id, data['statuses'])
         for user_id, data in json_data.items())
+    final = {user_id: doc for (user_id, doc) in out}
+    fp = open(os.path.join(args['output'], "user_docs.json"), "w")
+    json.dump(final, fp)
+    fp.close()
