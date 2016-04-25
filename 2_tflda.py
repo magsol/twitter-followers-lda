@@ -1,7 +1,9 @@
 import argparse
+from collections import defaultdict
 import json
 import os.path
 
+from gensim import corpora
 from joblib import Parallel, delayed
 
 from tflda.preprocess import clean
@@ -43,3 +45,17 @@ if __name__ == "__main__":
     fp = open(os.path.join(args['output'], "user_docs.json"), "w")
     json.dump(final, fp)
     fp.close()
+
+    # Generate a global dictionary.
+    frequencies = defaultdict(int)
+    for doc in final.values():
+        for w in doc:
+            frequencies[w] += 1
+    words = [[token for token in doc if frequencies[token] > 1]
+        for doc in final.values()]
+    dictionary = corpora.Dictionary(words)
+    dictionary.save(os.path.join(args['output'], "vocabulary.dict"))
+
+    # Generate vectors for all the documents.
+    corpus = [dictionary.doc2bow(doc) for doc in final.values()]
+    corpora.MmCorpus.serialize(os.path.join(args['output'], "corpus.mm"), corpus)
